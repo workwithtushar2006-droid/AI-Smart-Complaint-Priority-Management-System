@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartCity AI | Complaint Prioritization System</title>
+    <meta name="description"
+        content="AI-powered municipal complaint prioritization and management system for smart city governance.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html2pdf for report generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon">AI</div>
+                <h2>SmartCity<span>Gov</span></h2>
+            </div>
+            <nav>
+                <a href="#submit" class="nav-item active" id="nav-submit">
+                    <i data-lucide="plus-circle"></i>
+                    <span>Submit Complaint</span>
+                </a>
+                <a href="#dashboard" class="nav-item" id="nav-dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Admin Dashboard</span>
+                </a>
+                <a href="#analytics" class="nav-item" id="nav-analytics">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Analytics Hub</span>
+                </a>
+                <a href="#intelligence" class="nav-item" id="nav-intelligence">
+                    <i data-lucide="brain-circuit"></i>
+                    <span>AI Intelligence</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <span class="dot"></span>
+                    <span>System Online</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content-area">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="search-bar">
+                    <i data-lucide="search"></i>
+                    <input type="text" placeholder="Search complaints by ID, location or category...">
+                </div>
+                <div class="header-actions">
+                    <div class="notification-bell">
+                        <i data-lucide="bell"></i>
+                        <span class="badge" id="alert-badge" style="display: none;"></span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar">AD</div>
+                        <span>Admin Console</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Section: Complaint Submission -->
+            <section id="submit-section" class="app-section">
+                <div class="section-header">
+                    <h1>Submit New Complaint</h1>
+                    <p>Enter citizen report details for AI-powered prioritization.</p>
+                </div>
+
+                <div class="glass-container">
+                    <form id="complaint-form" class="smart-form">
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="citizen-name">Reporter Name</label>
+                                <div class="input-wrapper">
+                                    <i data-lucide="user"></i>
+                                    <input type="text" id="citizen-name" placeholder="Full name of reporter" required>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="location">Location / Ward</label>
+                                <div class="input-wrapper">
+                                    <i data-lucide="map-pin"></i>
+                                    <input type="text" id="location" placeholder="Street name, Sector, or Ward number"
+                                        required>
+                                </div>
+                            </div>
+                            <div class="form-group full-width">
+                                <label for="description">Complaint Description</label>
+                                <div class="input-wrapper textarea-wrapper">
+                                    <i data-lucide="file-text"></i>
+                                    <textarea id="description" rows="5"
+                                        placeholder="Describe the issue in detail (e.g., 'Large pothole near main hospital entrance...') "
+                                        required></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" id="submit-btn">
+                            <span class="btn-text">Analyze & Prioritize with AI</span>
+                            <div class="loader-spinner" id="form-loader"></div>
+                        </button>
+                    </form>
+
+                    <!-- AI Processing Animation Layer -->
+                    <div id="ai-processing-overlay" class="overlay hidden">
+                        <div class="processing-content">
+                            <div class="ai-brain-animation">
+                                <div class="pulse-ring"></div>
+                                <div class="pulse-ring"></div>
+                                <div class="pulse-inner">
+                                    <i data-lucide="cpu"></i>
+                                </div>
+                            </div>
+                            <h3>Analyzing complaint using AI intelligence...</h3>
+                            <div class="status-steps">
+                                <div class="step active" id="step-classify">Classifying Category...</div>
+                                <div class="step" id="step-urgency">Calculating Urgency...</div>
+                                <div class="step" id="step-verify">Verifying Authenticity...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Admin Dashboard -->
+            <section id="dashboard-section" class="app-section hidden">
+                <div class="section-header">
+                    <div class="header-left">
+                        <h1>Priority Dashboard</h1>
+                        <p>Real-time complaints sorted by AI urgency scores.</p>
+                    </div>
+                    <div class="header-right">
+                        <button class="btn-secondary" id="generate-report-btn">
+                            <i data-lucide="file-spreadsheet"></i>
+                            <span>Generate Smart Report</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid" id="dashboard-container">
+                    <!-- Complaint Cards will be injected here -->
+                    <div class="empty-state" id="empty-state">
+                        <i data-lucide="inbox"></i>
+                        <h3>No complaints received yet.</h3>
+                        <p>New submissions will appear here automatically sorted by priority.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Analytics -->
+            <section id="analytics-section" class="app-section hidden">
+                <div class="section-header">
+                    <h1>City Statistics Hub</h1>
+                    <p>Intelligence overview of municipal issues and response times.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i data-lucide="clipboard-list"></i></div>
+                        <div class="stat-info">
+                            <span class="label">Total Complaints</span>
+                            <h2 id="stat-total">0</h2>
+                            <div class="trend up">+12% from last week</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red pulse-glow"><i data-lucide="alert-triangle"></i></div>
+                        <div class="stat-info">
+                            <span class="label">Critical Alerts</span>
+                            <h2 id="stat-critical">0</h2>
+                            <div class="trend">High Priority Actions</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon amber"><i data-lucide="gauge"></i></div>
+                        <div class="stat-info">
+                            <span class="label">Avg Urgency Score</span>
+                            <h2 id="stat-avg">0.0</h2>
+                            <div class="trend">Calculated by AI</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i data-lucide="check-circle-2"></i></div>
+                        <div class="stat-info">
+                            <span class="label">Resolved Cases</span>
+                            <h2 id="stat-resolved">0</h2>
+                            <div class="trend">Wait time: ~4.2 hrs</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analytics-detail">
+                    <div class="glass-card chart-container">
+                        <h3>Complaint Distribution</h3>
+                        <div class="category-bars" id="category-distribution">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                    <div class="glass-card recent-activity">
+                        <h3>Recent AI Actions</h3>
+                        <ul class="activity-list" id="activity-log">
+                            <li>System Initialized...</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Intelligence Enhancements -->
+            <section id="intelligence-section" class="app-section hidden">
+                <div class="section-header">
+                    <h1>System Intelligence Enhancements</h1>
+                    <p>Advanced algorithmic modules for smart city governance.</p>
+                </div>
+
+                <div class="enhancements-grid">
+                    <div class="enhancement-card">
+                        <div class="card-top">
+                            <i data-lucide="copy"></i>
+                            <h3>Duplicate Detection</h3>
+                        </div>
+                        <p>AI compares semantic meaning of new reports with existing ones to prevent redundant resource
+                            allocation.</p>
+                        <span class="status-pill active">Operational</span>
+                    </div>
+                    <div class="enhancement-card">
+                        <div class="card-top">
+                            <i data-lucide="hospital"></i>
+                            <h3>Geo-Priority Boost</h3>
+                        </div>
+                        <p>Complaints near Hospitals, Schools, and Metro stations receive an automatic +1 urgency score
+                            boost.</p>
+                        <span class="status-pill active">Operational</span>
+                    </div>
+                    <div class="enhancement-card">
+                        <div class="card-top">
+                            <i data-lucide="zap"></i>
+                            <h3>Emergency Keyword Detection</h3>
+                        </div>
+                        <p>Detects 'fire', 'electric shock', 'gas leak', etc. to instantly flag complaints as Critical
+                            (5).</p>
+                        <span class="status-pill active">Operational</span>
+                    </div>
+                    <div class="enhancement-card future">
+                        <div class="card-top">
+                            <i data-lucide="map"></i>
+                            <h3>Map-based Visualization</h3>
+                        </div>
+                        <p>Deploying real-time heatmaps for visual resource management across the municipality.</p>
+                        <span class="status-pill upcoming">Future Phase</span>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Mobile Bottom Navigation (Visible on Phone) -->
+        <nav class="mobile-nav">
+            <a href="#submit" class="mobile-nav-item active" id="mobile-nav-submit">
+                <i data-lucide="plus-circle"></i>
+                <span>Submit</span>
+            </a>
+            <a href="#dashboard" class="mobile-nav-item" id="mobile-nav-dashboard">
+                <i data-lucide="layout-dashboard"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#analytics" class="mobile-nav-item" id="mobile-nav-analytics">
+                <i data-lucide="bar-chart-3"></i>
+                <span>Stats</span>
+            </a>
+            <a href="#intelligence" class="mobile-nav-item" id="mobile-nav-intelligence">
+                <i data-lucide="brain-circuit"></i>
+                <span>AI</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Hidden Report Template for PDF Generation -->
+    <div id="report-template" style="display: none; padding: 40px; color: #333; font-family: 'Inter', sans-serif;">
+        <div style="text-align: center; border-bottom: 2px solid #1e1b4b; padding-bottom: 20px; margin-bottom: 30px;">
+            <h1 style="color: #1e1b4b; margin: 0;">Smart City Complaint Intelligence Report</h1>
+            <p id="report-date" style="color: #666; margin: 10px 0 0 0;"></p>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            <h2 style="color: #1e1b4b; border-left: 4px solid #3b82f6; padding-left: 10px;">Analytics Summary</h2>
+            <div style="display: flex; justify-content: space-between; gap: 20px; margin-top: 20px;">
+                <div style="background: #f1f5f9; padding: 20px; border-radius: 10px; flex: 1; text-align: center;">
+                    <p style="margin: 0; font-size: 14px; color: #64748b;">Total Complaints</p>
+                    <h3 style="margin: 5px 0 0 0; font-size: 24px;" id="repo-total">0</h3>
+                </div>
+                <div style="background: #fef2f2; padding: 20px; border-radius: 10px; flex: 1; text-align: center;">
+                    <p style="margin: 0; font-size: 14px; color: #64748b;">Critical Cases</p>
+                    <h3 style="margin: 5px 0 0 0; font-size: 24px; color: #ef4444;" id="repo-critical">0</h3>
+                </div>
+                <div style="background: #ecfdf5; padding: 20px; border-radius: 10px; flex: 1; text-align: center;">
+                    <p style="margin: 0; font-size: 14px; color: #64748b;">Resolved</p>
+                    <h3 style="margin: 5px 0 0 0; font-size: 24px; color: #10b981;" id="repo-resolved">0</h3>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h2 style="color: #1e1b4b; border-left: 4px solid #3b82f6; padding-left: 10px;">Top Urgent Complaints</h2>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                <thead>
+                    <tr style="background: #1e1b4b; color: white; text-align: left;">
+                        <th style="padding: 12px;">Urgency</th>
+                        <th style="padding: 12px;">Category</th>
+                        <th style="padding: 12px;">Summary</th>
+                        <th style="padding: 12px;">Location</th>
+                    </tr>
+                </thead>
+                <tbody id="report-table-body">
+                    <!-- Rows injected by JS -->
+                </tbody>
+            </table>
+        </div>
+
+        <div
+            style="margin-top: 50px; border-top: 1px solid #ddd; padding-top: 20px; text-align: center; color: #94a3b8; font-size: 12px;">
+            <p>Generated by SmartCity AI Governance Engine &copy; 2026</p>
+            <p>Confidential Municipal Resource Document</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
